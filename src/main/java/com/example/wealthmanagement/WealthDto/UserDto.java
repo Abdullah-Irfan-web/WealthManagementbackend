@@ -13,5 +13,10 @@ private int id;
 private String Username;
 private String email;
 private String Password;
+private String gender;
+private String bankName;
+private String bankAccountNumber;
+private float totalWealth;
+
 
 }

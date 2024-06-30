@@ -28,5 +28,6 @@ public class TransactionEntity{
     private String balance;
     private String paymentMethod;
     private String email;
+    private String time;
 
 }

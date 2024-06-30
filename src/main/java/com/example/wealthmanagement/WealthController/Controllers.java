@@ -1,7 +1,5 @@
 package com.example.wealthmanagement.WealthController;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,23 +13,27 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.wealthmanagement.Msg.AssetMsg;
 import com.example.wealthmanagement.Msg.BudgetMsg;
 import com.example.wealthmanagement.Msg.LiabilityMsg;
+import com.example.wealthmanagement.Msg.PaymentMsg;
 import com.example.wealthmanagement.Msg.StockMsg;
 import com.example.wealthmanagement.Msg.TransactionMsg;
 import com.example.wealthmanagement.Msg.UserMsg;
 import com.example.wealthmanagement.WealthDto.AssetDto;
 import com.example.wealthmanagement.WealthDto.BudgetDto;
 import com.example.wealthmanagement.WealthDto.LiabilityDto;
+import com.example.wealthmanagement.WealthDto.PaymentDto;
 import com.example.wealthmanagement.WealthDto.StockDto;
+import com.example.wealthmanagement.WealthDto.StockPLDto;
 import com.example.wealthmanagement.WealthDto.TransactionDto;
 import com.example.wealthmanagement.WealthDto.UserDto;
 import com.example.wealthmanagement.WealthService.Assetservice;
 import com.example.wealthmanagement.WealthService.BudgetService;
 import com.example.wealthmanagement.WealthService.Liabilityservice;
+import com.example.wealthmanagement.WealthService.Paymentservice;
 import com.example.wealthmanagement.WealthService.Stockservice;
 import com.example.wealthmanagement.WealthService.Transactionservice;
 import com.example.wealthmanagement.WealthService.Userservice;
 
-import yahoofinance.YahooFinance;
+
 
 
 
@@ -52,16 +54,18 @@ public class Controllers {
     final Transactionservice transactionservice;
     final BudgetService budgetservice;
     final Stockservice stockservice;
+    final Paymentservice paymentservice;
     
 
 public Controllers(Userservice userservice, Assetservice assetservice, Liabilityservice liabilityservice,
-            Transactionservice transactionservice, BudgetService budgetservice,Stockservice stockservice ) {
+            Transactionservice transactionservice, BudgetService budgetservice,Stockservice stockservice,Paymentservice paymentservice ) {
         this.userservice = userservice;
         this.assetservice = assetservice;
         this.liabilityservice = liabilityservice;
         this.transactionservice = transactionservice;
         this.budgetservice=budgetservice;
         this.stockservice=stockservice;
+        this.paymentservice=paymentservice;
     }
 
 
@@ -131,6 +135,11 @@ public LiabilityMsg deleteliability(@PathVariable int id) {
     return liabilityservice.deleteliability(id);
 }
 
+@GetMapping("/gettotalamount/{email}")
+public UserDto gettotalamount(@PathVariable String email) {
+    return userservice.gettotalwealth(email);
+}
+
 
 // Transaction Mapping
 
@@ -146,8 +155,8 @@ public TransactionMsg addtransaction(@RequestBody TransactionDto transactionDto)
     String email=transactionDto.getEmail();
     int amount=(int)transactionDto.getAmount();
     String balance=transactionDto.getBalance();
-
-   System.out.println( budgetservice.update(type,email,amount,balance));
+    
+   budgetservice.update(type,email,amount,balance);
 
     return transactionservice.addtransaction(transactionDto);
 }
@@ -180,10 +189,7 @@ public List<StockDto> getstock(@PathVariable String email) {
 
     return stockservice.getstock(email);
 }
-@GetMapping("/sellstock/{id}")
-public StockMsg sellstock(@PathVariable int id) {
-    return stockservice.sellstock(id);
-}
+
 
 
 @PostMapping("/addstock")
@@ -194,6 +200,23 @@ public StockMsg addstock(@RequestBody StockDto stockDto) {
 }
 
 
+@PostMapping("/sellstock")
+public StockMsg sellstock(@RequestBody StockPLDto stockPLDto) {
+   
+   return stockservice.sellstock(stockPLDto.getId(),stockPLDto.getPl(),stockPLDto.getEmail());
+}
+
+@GetMapping("/getpayments/{email}")
+public List<PaymentDto> getpayments (@PathVariable String email) {
+    return  paymentservice.getpayments(email);
+}
+
+@PostMapping("/makepayment")
+public PaymentMsg makepayment(@RequestBody PaymentDto paymentDto) {
+    System.err.println(paymentDto);
+    
+    return paymentservice.makepayment(paymentDto);
+}
 
 
 

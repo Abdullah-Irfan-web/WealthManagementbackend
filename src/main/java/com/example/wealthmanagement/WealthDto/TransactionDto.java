@@ -18,5 +18,6 @@ private float amount;
 private String balance;
 private String paymentMethod;
 private String email;
+private String time;
 
 }

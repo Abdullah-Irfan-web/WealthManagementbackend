@@ -8,23 +8,22 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Entity
-@Table(name = "User")
+@Table(name="Payment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class PaymentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private String Username;
-private String email;
-private String Password;
-private String gender;
-private String bankName;
-private String bankAccountNumber;
-private float totalWealth;
+    private String name;
+    private String emailfrom;
+    private String emailto;
+    private float amount;
+    private String date;
+private String day;
+private String time;
 
 }

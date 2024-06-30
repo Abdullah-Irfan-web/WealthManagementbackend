@@ -64,6 +64,11 @@ public class Userservice {
         return new UserMsg(userDto,"Email Not Exist");
       
     }
+    public UserDto gettotalwealth(String email){
+      UserEntity user=UserRepo.findByEmail(email);
+
+      return modelMapper.map(user,UserDto.class);
+    }
     
 
 }
