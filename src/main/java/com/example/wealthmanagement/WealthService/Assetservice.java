@@ -66,6 +66,7 @@ public class Assetservice {
     }
 
     public AssetMsg updateasset(AssetDto assetDto){
+    
         if(assetDto.getName().equals("Real Estate")){
             if(assetDto.getValue()<200000){
                 return new AssetMsg(assetDto,"Value for Real Estate is less");
@@ -76,13 +77,25 @@ public class Assetservice {
                 return new AssetMsg(assetDto,"Value for Vehicle is less");
             }
         }
+        Optional<AssetEntity> asset=Assetrepo.findById(assetDto.getId());
+        float orgprice=asset.get().getValue();
+        UserEntity user= Userrepo.findByEmail(assetDto.getEmail());
+        if(orgprice>=assetDto.getValue()){
+            float diff=orgprice-assetDto.getValue();
+           user.setTotalWealth(user.getTotalWealth()+diff);
+        }
+        else{
+            float diff=assetDto.getValue()-orgprice;
+            if(user.getTotalWealth()<diff){
+                return new AssetMsg(assetDto,"Do not have enough balance to buy asset");
+               
+               }
+               user.setTotalWealth(user.getTotalWealth()-diff);
 
-           UserEntity user= Userrepo.findByEmail(assetDto.getEmail());
-           if(user.getTotalWealth()<assetDto.getValue()){
-            return new AssetMsg(assetDto,"Do not have enough balance to buy asset");
-           
-           }
-           user.setTotalWealth(user.getTotalWealth()-assetDto.getValue());
+        }
+          
+          
+         
 
            Userrepo.save(user);
 
